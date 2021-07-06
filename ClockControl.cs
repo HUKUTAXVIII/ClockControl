@@ -11,7 +11,8 @@ namespace ClockControl
     public class ClockControl:Control
     {
         private Timer timer;
-        private double TickCount;
+        private double SecTickCount;
+        private double MinTickCount;
         private int counter;
         public ClockControl(): base()
         {
@@ -22,7 +23,8 @@ namespace ClockControl
             timer.Enabled = true;
             timer.Tick += Timer_Tick;
             timer.Start();
-            TickCount = 4.71239;
+            SecTickCount = 4.71239;
+            MinTickCount = 4.71239;
             counter = 0;
            
             
@@ -30,7 +32,8 @@ namespace ClockControl
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            TickCount += (0.0174533 * 6);
+            SecTickCount += (0.0174533 * 6);
+            MinTickCount += (0.0174533 * 6)/60;
             counter++;
             this.Invalidate();
         }
@@ -44,11 +47,12 @@ namespace ClockControl
 
             Graphics.FillEllipse(Brushes.BurlyWood,new Rectangle(new Point(0,0),this.Size));
             
-            var first =  this.Width/2 + Math.Cos(TickCount) * this.Width/2;
-            var second = this.Width/2 + Math.Sin(TickCount) * this.Height/2;
-            Graphics.DrawLine(Pens.Black,new Point(this.Width/2,this.Height/2),new Point( (int)first,(int)second ));
+            var first =  this.Width/2 + Math.Cos(MinTickCount) * this.Width/2.5;
+            var second = this.Width/2 + Math.Sin(MinTickCount) * this.Height/2.5;
+            Graphics.DrawLine(Pens.Black,new Point(this.Width/2,this.Height/2),new Point( (int)(this.Width / 2 + Math.Cos(SecTickCount) * this.Width / 2),(int)(this.Width / 2 + Math.Sin(SecTickCount) * this.Height / 2) ));
+            Graphics.DrawLine(Pens.BlueViolet,new Point(this.Width/2,this.Height/2),new Point( (int)first,(int)second ));
 
-            Graphics.DrawString((counter).ToString(),new Font("Arial",12,FontStyle.Regular),Brushes.Red,this.Width/2-12,this.Height/2-20);
+            Graphics.DrawString((counter/60).ToString(),new Font("Arial",12,FontStyle.Regular),Brushes.Red,this.Width/2-12,this.Height/2-20);
 
         }
     }
