@@ -14,20 +14,18 @@ namespace ClockControl
         private double SecTickCount;
         private double MinTickCount;
         private double HrTickCount;
-        private int counter;
         public ClockControl(): base()
         {
-            this.Size = new System.Drawing.Size(300,300);
+            this.Size = new System.Drawing.Size(200,200);
             this.Paint += ClockControl_Paint;
             timer = new Timer();
             timer.Interval = 1000;
             timer.Enabled = true;
             timer.Tick += Timer_Tick;
             timer.Start();
-            SecTickCount = 4.71239;
-            MinTickCount = 4.71239;
-            HrTickCount = 4.71239;
-            counter = 0;
+            SecTickCount = 4.71239+(0.0174533 * 6) * DateTime.Now.Second;
+            MinTickCount = 4.71239 + (0.0174533 * 6) * DateTime.Now.Minute;
+            HrTickCount = 4.71239 + (0.0174533 * 12) * DateTime.Now.Hour;
            
             
         }
@@ -37,7 +35,7 @@ namespace ClockControl
             SecTickCount += (0.0174533 * 6);
             MinTickCount += (0.0174533 * 6)/60;
             HrTickCount += (0.0174533 * 6)/60/60;
-            counter++;
+            //counter++;
             this.Invalidate();
         }
 
@@ -45,18 +43,11 @@ namespace ClockControl
         {
             var Graphics = this.CreateGraphics();
 
-
-
-
-            Graphics.FillEllipse(Brushes.BurlyWood,new Rectangle(new Point(0,0),this.Size));
-            
-            //var first =  this.Width/2 + Math.Cos(HrTickCount) * this.Width/2.5;
-            //var second = this.Width/2 + Math.Sin(HrTickCount) * this.Height/2.5;
-            Graphics.DrawLine(Pens.Black,new Point(this.Width/2,this.Height/2),new Point( (int)(this.Width / 2 + Math.Cos(SecTickCount) * this.Width / 2),(int)(this.Width / 2 + Math.Sin(SecTickCount) * this.Height / 2) ));
-            Graphics.DrawLine(Pens.BlueViolet,new Point(this.Width/2,this.Height/2),new Point( (int)(this.Width / 2 + Math.Cos(MinTickCount) * this.Width / 2.5),(int)(this.Width / 2 + Math.Sin(MinTickCount) * this.Height / 2.5) ));
+            Graphics.DrawImage(Image.FromFile("Clock.png"),new Rectangle(new Point(0,0),this.Size));
+            Graphics.DrawLine(Pens.Black,new Point(this.Width/2,this.Height/2),new Point( (int)(this.Width / 2 + Math.Cos(SecTickCount) * this.Width / 2),(int)(this.Width / 2.4 + Math.Sin(SecTickCount) * this.Height / 2.4) ));
+            Graphics.DrawLine(Pens.BlueViolet,new Point(this.Width/2,this.Height/2),new Point( (int)(this.Width / 2 + Math.Cos(MinTickCount) * this.Width / 2.8),(int)(this.Width / 2 + Math.Sin(MinTickCount) * this.Height / 2.8) ));
             Graphics.DrawLine(Pens.Red,new Point(this.Width/2,this.Height/2),new Point( (int)(this.Width / 2 + Math.Cos(HrTickCount) * this.Width / 3),(int)(this.Width / 2 + Math.Sin(HrTickCount) * this.Height /3) ));
 
-            Graphics.DrawString((counter/60).ToString(),new Font("Arial",12,FontStyle.Regular),Brushes.Red,this.Width/2-12,this.Height/2-20);
 
         }
     }
